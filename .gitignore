@@ -15,6 +15,8 @@ benchmark/results
 .DS_Store
 .vscode
 .settings
+.clasp.json
+.clasprc.json
 
 # Do not put the generated documentation in master
 docs/

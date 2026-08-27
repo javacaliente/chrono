@@ -50,6 +50,7 @@
     "@typescript-eslint/eslint-plugin": "^8.32.1",
     "@typescript-eslint/parser": "^8.32.1",
     "benny": "^3.7.1",
+    "esbuild": "^0.28.2",
     "eslint": "^9.27.0",
     "eslint-config-prettier": "^10.1.5",
     "husky": "^4.2.5",
@@ -71,6 +72,7 @@
     "build": "rimraf dist && npm run build-cjs && npm run build-esm && npm run add-package.json",
     "build-cjs": "tsc -p tsconfig.build.json",
     "build-esm": "tsc -p tsconfig.build.esm.json && tsc-esm-fix --target=dist/esm",
+    "build:apps-script": "node apps-script/build.mjs",
     "add-package.json": "run-script-os",
     "add-package.json:nix": "echo '{\"type\":\"commonjs\",\"sideEffects\":false}' > dist/cjs/package.json && echo '{\"type\":\"module\",\"sideEffects\":false}' > dist/esm/package.json",
     "add-package.json:windows": "echo {\"type\":\"commonjs\",\"sideEffects\":false} > dist/cjs/package.json && echo {\"type\":\"module\",\"sideEffects\":false} > dist/esm/package.json",
@@ -83,9 +85,9 @@
     "prettier:test": "prettier --write test --loglevel=warn",
     "watch": "jest --watch",
     "test": "jest --coverage",
-    "test:silent": "jest --silent"
+    "test:silent": "jest --silent",
+    "test:apps-script": "npm run build:apps-script && node apps-script/smoke-test.cjs"
   },
-  "dependencies": {},
   "eslintConfig": {
     "env": {
       "es6": true,
