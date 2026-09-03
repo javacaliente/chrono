@@ -34,40 +34,9 @@ const chrono = require('chrono-node');
 // or `import chrono from 'chrono-node'` for ECMAScript
 ```
 
-### Google Apps Script (`.gs`)
+### Google Apps Script
 
-This fork includes a build target for an English-only, V8-compatible Google Apps Script bundle. It packages Chrono and its module imports into one standalone `.gs` file with no runtime dependencies.
-
-Build and verify the bundle locally:
-
-```bash
-npm install
-npm run build:apps-script
-npm run test:apps-script
-```
-
-The generated files are:
-
-```text
-dist/apps-script/Chrono.gs
-dist/apps-script/appsscript.json
-```
-
-Copy `Chrono.gs` into a V8 Apps Script project and use the global `ChronoNode` API from another `.gs` file:
-
-```javascript
-function testChrono() {
-    const date = ChronoNode.parseDate(
-        "next Friday at 4pm",
-        new Date(),
-        { forwardDate: true }
-    );
-
-    Logger.log(date);
-}
-```
-
-The included manifest defaults to UTC. Change its `timeZone` before building if the Apps Script project should interpret local dates in another time zone. See the [Google Apps Script build guide](apps-script/README.md) for additional usage and `clasp` deployment instructions.
+This `grokbot/apps-script-build` branch packages English Chrono for the print shop job desk. See [GROKBOT.md](GROKBOT.md). Do not open a pull request against `wanasit/chrono`.
 
 ### What's changed in the v2
 For Users

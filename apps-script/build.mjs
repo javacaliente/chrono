@@ -1,18 +1,21 @@
 import { build } from "esbuild";
-import { copyFile, mkdir } from "node:fs/promises";
+import { copyFile, mkdir, readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 
 const outputDirectory = new URL("../dist/apps-script/", import.meta.url);
 
 await mkdir(outputDirectory, { recursive: true });
 
+const gsOutfile = fileURLToPath(new URL("./Chrono.gs", outputDirectory));
+const htmlOutfile = fileURLToPath(new URL("./Chrono.html", outputDirectory));
+
 await build({
   entryPoints: [fileURLToPath(new URL("./entry.ts", import.meta.url))],
-  outfile: fileURLToPath(new URL("./Chrono.gs", outputDirectory)),
+  outfile: gsOutfile,
   bundle: true,
   platform: "browser",
   format: "iife",
-  globalName: "ChronoNode",
+  globalName: "chrono",
   target: "es2019",
   sourcemap: false,
   legalComments: "inline",
@@ -21,6 +24,11 @@ await build({
   },
 });
 
+const js = await readFile(gsOutfile, "utf8");
+const openTag = "<" + "script>";
+const closeTag = "</" + "script>";
+await writeFile(htmlOutfile, openTag + "\n" + js + "\n" + closeTag + "\n");
+
 await copyFile(new URL("./appsscript.json", import.meta.url), new URL("./appsscript.json", outputDirectory));
 
-console.log("Built dist/apps-script/Chrono.gs");
+console.log("Built dist/apps-script/Chrono.gs and dist/apps-script/Chrono.html");

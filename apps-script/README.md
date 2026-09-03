@@ -1,6 +1,11 @@
-# Google Apps Script build
+# Google Apps Script build (print shop job desk)
 
-This build packages Chrono's English locale as one Google Apps Script-compatible file. The source stays in TypeScript; `dist/apps-script/Chrono.gs` is generated and should not be edited by hand.
+This `grokbot/apps-script-build` branch packages English Chrono 2.10.1 for
+Michael Martin's print shop job desk. Do **not** open pull requests against
+`wanasit/chrono`.
+
+The source stays in TypeScript. Generated files under `dist/apps-script/`
+should not be edited by hand and should not be committed.
 
 ## Build and verify
 
@@ -14,33 +19,31 @@ The build produces:
 
 ```text
 dist/apps-script/Chrono.gs
+dist/apps-script/Chrono.html
 dist/apps-script/appsscript.json
 ```
 
-`Chrono.gs` has no `import`, `export`, or `require` statements. Its public API is exposed through the global `ChronoNode` object.
+`Chrono.gs` has no `import`, `export`, or `require` statements. Its public
+API is the global `chrono` object (`chrono.parse`, `chrono.parseDate`).
 
-## Use in Apps Script
+`Chrono.html` is the same JavaScript wrapped in `<script>` tags for
+HtmlService.
 
-Copy `Chrono.gs` into a V8 Apps Script project, then call it from another `.gs` file:
+The Apps Script manifest uses V8 and `America/Los_Angeles` (PT).
+
+## Use in the job desk (HtmlService)
+
+Copy `Chrono.html` into the print shop job desk and include it from
+HtmlService. Parse job-copy dates in Pacific Time:
 
 ```javascript
-function testChrono() {
-  const reference = new Date();
-  const date = ChronoNode.parseDate("next Friday at 4pm", reference, { forwardDate: true });
-
-  Logger.log(date);
-}
+const results = chrono.parse("Need these by September 11.", {
+  instant: new Date(),
+  timezone: "PT",
+});
 ```
 
-The included manifest uses UTC for deterministic behavior. Change `timeZone` in `apps-script/appsscript.json` before building if the Apps Script project should interpret local dates in another time zone.
+Do **not** clasp-push this folder onto the live Print shop job desk project.
+Copy `Chrono.html` into the desk instead.
 
-## Deploy with clasp
-
-After installing and authenticating `clasp`, create or clone an Apps Script project and configure its `rootDir` as `dist/apps-script`. Keep `.clasp.json` local because it contains the project-specific script ID.
-
-```bash
-npm run build:apps-script
-clasp push
-```
-
-Only the English locale is bundled to keep the generated script small. Add other locale exports to `apps-script/entry.ts` if they are needed.
+See [GROKBOT.md](../GROKBOT.md) for branch intent and the same warnings.
